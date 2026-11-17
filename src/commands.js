@@ -9,8 +9,9 @@ export const commands = Object.entries(required).map(([name,permission]) => {
   return command;
 });
 commands.push(
-  new SlashCommandBuilder().setName('history').setDescription('Last ten cases for a member').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
-    .addUserOption(o => o.setName('member').setDescription('Member').setRequired(true)),
+  new SlashCommandBuilder().setName('history').setDescription('Browse case history for a member').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
+    .addUserOption(o => o.setName('member').setDescription('Member').setRequired(true))
+    .addIntegerOption(o => o.setName('page').setDescription('History page, newest first').setMinValue(1).setMaxValue(100000)),
   new SlashCommandBuilder().setName('case').setDescription('Look up a case').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
     .addIntegerOption(o => o.setName('id').setDescription('Case number').setMinValue(1).setRequired(true)),
   new SlashCommandBuilder().setName('mod-config').setDescription('Set or disable moderation logs').setDMPermission(false).setDefaultMemberPermissions(P.ManageGuild)

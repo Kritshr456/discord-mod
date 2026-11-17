@@ -21,9 +21,13 @@ client.on(Events.InteractionCreate, async i => {
     }
     if (['history','case'].includes(i.commandName)) {
       if (!actor.permissions.has(P.ModerateMembers)) throw new UserError('Moderate Members is required.');
-      const rows = i.commandName === 'history' ? store.history(i.guildId,i.options.getUser('member',true).id)
+      const page = i.commandName === 'history' ? i.options.getInteger('page') ?? 1 : 1;
+      const target = i.commandName === 'history' ? i.options.getUser('member',true).id : null;
+      const total = target ? store.historyCount(i.guildId,target) : 0;
+      const heading = target ? `Page ${page} • ${total} cases • ${Math.max(1,Math.ceil(total/3))} pages\n\n` : '';
+      const rows = i.commandName === 'history' ? store.history(i.guildId,target,page)
         : [store.getCase(i.guildId,i.options.getInteger('id',true))].filter(Boolean);
-      return await i.editReply(rows.map(c => `#${c.id} ${c.action} • ${c.status} • <@${c.target}> • by <@${c.moderator}>${c.duration ? ` • ${c.duration} minutes` : ''}\n${c.reason}\n${c.created} UTC`).join('\n\n').slice(0,1950) || 'No cases found.');
+      return await i.editReply(heading + (rows.map(c => `#${c.id} ${c.action} • ${c.status} • <@${c.target}> • by <@${c.moderator}>${c.duration ? ` • ${c.duration} minutes` : ''}\n${c.reason}\n${c.created} UTC`).join('\n\n').slice(0,1900) || 'No cases found on this page.'));
     }
     if (!required[i.commandName]) return await i.editReply('Unknown command.');
     if (busy.has(key)) throw new UserError('Another moderation action is already running for this member.');

@@ -27,7 +27,7 @@ Never grant Administrator just to work around role placement.
 - `/warn member reason`: save a warning without a DM or role change.
 - `/timeout member reason minutes`: timeout for 1 minute through 28 days.
 - `/untimeout member reason`, `/kick member reason`, `/ban member reason`.
-- `/history member`: ten most recent cases, including failed or pending actions.
+- `/history member page`: browse three cases per page, newest first, including failed or pending actions. Page defaults to 1; full reasons remain available through `/case id`.
 - `/case id`: inspect a case in the current server.
 - `/mod-config channel`: set the log channel; omit channel to disable delivery.
 
@@ -61,3 +61,10 @@ Tests use temporary in-memory databases and fake member permissions. They cover
 case isolation, failed actions, validation, settings and hierarchy checks.
 A live test server and bot token are required to verify gateway/API behavior;
 never run destructive moderation smoke tests in a real community.
+
+## Updating
+
+Run `git pull --ff-only` and `npm ci`, then re-register the guild commands with
+`node --env-file=.env src/deploy.js` before restarting the bot.
+See [CHANGELOG.md](CHANGELOG.md) for the latest behavior changes. This update
+does not require a database migration.

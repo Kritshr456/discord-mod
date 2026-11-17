@@ -33,3 +33,23 @@ test('role hierarchy, owner protection and both permission checks',()=>{
 test('settings can be updated and disabled independently per guild',()=>{
   const s=openStore();try{s.setLog('a','one');s.setLog('b','two');s.setLog('a',null);assert.equal(s.logChannel('a'),null);assert.equal(s.logChannel('b'),'two');}finally{s.close();}
 });
+test('history pages expose older cases without overlapping guilds or members',()=>{
+  const s=openStore();
+  try{
+    for(let n=0;n<8;n++)s.create({...input,reason:`Reason ${n}`});
+    s.create({...input,guild:'other'});s.create({...input,target:'another'});
+    assert.equal(s.historyCount('g','t'),8);
+    assert.deepEqual(s.history('g','t',1).map(c=>c.id),[8,7,6]);
+    assert.deepEqual(s.history('g','t',2).map(c=>c.id),[5,4,3]);
+    assert.deepEqual(s.history('g','t',3).map(c=>c.id),[2,1]);
+    assert.deepEqual(s.history('g','t',4),[]);
+    for(const page of [0,-1,1.5,100001,'1'])assert.throws(()=>s.history('g','t',page));
+  }finally{s.close();}
+});
+test('history slash command exposes an optional bounded page',async()=>{
+  const {commands}=await import('../src/commands.js');
+  const command=commands.find(c=>c.name==='history').toJSON();
+  assert.equal(command.options.find(o=>o.name==='page').min_value,1);
+  assert.equal(command.options.find(o=>o.name==='page').max_value,100000);
+  for(const c of commands)assert.ok(c.toJSON().name);
+});

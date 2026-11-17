@@ -16,7 +16,11 @@ export function openStore(path = ':memory:') {
     create: c => Number(db.prepare('INSERT INTO cases(guild,target,moderator,action,reason,duration) VALUES(?,?,?,?,?,?)')
       .run(c.guild,c.target,c.moderator,c.action,c.reason,c.duration ?? null).lastInsertRowid),
     finish: (id,status) => db.prepare('UPDATE cases SET status=? WHERE id=?').run(status,id),
-    history: (guild,target) => db.prepare('SELECT * FROM cases WHERE guild=? AND target=? ORDER BY id DESC LIMIT 10').all(guild,target),
+    history(guild,target,page=1) {
+      if (!Number.isInteger(page) || page < 1 || page > 100000) throw new RangeError('Invalid history page.');
+      return db.prepare('SELECT * FROM cases WHERE guild=? AND target=? ORDER BY id DESC LIMIT 3 OFFSET ?').all(guild,target,(page-1)*3);
+    },
+    historyCount: (guild,target) => db.prepare('SELECT COUNT(*) AS total FROM cases WHERE guild=? AND target=?').get(guild,target).total,
     getCase: (guild,id) => db.prepare('SELECT * FROM cases WHERE guild=? AND id=?').get(guild,id),
     setLog: (guild,channel) => db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(guild) DO UPDATE SET log_channel=excluded.log_channel').run(guild,channel),
     logChannel: guild => db.prepare('SELECT log_channel FROM settings WHERE guild=?').get(guild)?.log_channel,

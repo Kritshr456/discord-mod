@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+- Deliver the configured moderation log even when the private success reply fails.
+- Keep notification failures separate from the completed moderation action.
+- Add notification failure and disabled-log regression coverage.
+
 ## 1.2.0
 
 - Add guild-scoped moderation activity summaries with configurable lookback periods.

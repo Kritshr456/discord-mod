@@ -35,7 +35,8 @@ Replies are private. Every moderation action checks the moderator's permissions,
 the bot's permissions and both role hierarchies. The owner, the bot and the
 acting moderator cannot be targeted. Commands only target current guild members.
 Reasons are limited to 400 characters; user mentions never trigger notifications.
-Log delivery failure does not undo a completed action.
+Private replies and configured logs are delivered independently. Notification
+failure does not undo a completed action or mark its case as failed.
 
 ## Data and operations
 

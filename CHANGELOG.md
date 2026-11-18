@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+- Start private success replies and moderation-log delivery independently, so a slow reply cannot delay logging.
+
 ## 1.2.1
 
 - Deliver the configured moderation log even when the private success reply fails.

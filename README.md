@@ -86,3 +86,6 @@ by action and completed/failed/pending status. Choose 1–365 days; the default 
 30. Counts use each case's creation time in UTC and do not include case notes.
 Moderate Members is checked at runtime. No member names or case reasons are
 included in the summary. Re-register commands after updating.
+
+Private success replies and moderation-log delivery start independently. A slow
+interaction response no longer holds up sending the saved case to the log channel.

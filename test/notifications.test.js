@@ -43,3 +43,15 @@ test('disabled logging never fetches a channel', async () => {
   await notifyModerationResult(interaction, result, null);
   assert.equal(replies.length, 1);
 });
+
+test('a slow private reply does not delay starting moderation log delivery', async () => {
+  const { interaction } = fixture();
+  let release, delivered = false;
+  interaction.editReply = () => new Promise(resolve => { release = resolve; });
+  interaction.guild.channels.fetch = async () => ({ send: async () => { delivered = true; } });
+  const pending = notifyModerationResult(interaction, result, 'log-channel');
+  try {
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(delivered, true);
+  } finally { release(); await pending; }
+});

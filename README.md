@@ -68,3 +68,12 @@ Run `git pull --ff-only` and `npm ci`, then re-register the guild commands with
 `node --env-file=.env src/deploy.js` before restarting the bot.
 See [CHANGELOG.md](CHANGELOG.md) for the latest behavior changes. This update
 does not require a database migration.
+
+## Case notes
+
+`/case-note id:<id> note:<text>` appends a note to a case. `/case-notes id:<id>
+page:2` browses notes, newest first, three per page. Both require Moderate Members
+and reply privately. Notes cannot change the original reason, action or status.
+Notes may also document failed or pending cases; they do not retry Discord actions.
+Back up before upgrading, restart, and re-register guild commands. The notes
+table is created automatically; existing case records are preserved.

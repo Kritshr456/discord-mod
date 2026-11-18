@@ -1,5 +1,6 @@
 import { Client, GatewayIntentBits, Events, PermissionFlagsBits as P, MessageFlags } from 'discord.js';
 import { openStore } from './store.js';
+import { handleCaseCommand } from './case-commands.js';
 import { authorize, moderate, required, UserError } from './moderation.js';
 if (!process.env.DISCORD_TOKEN) throw new Error('Missing DISCORD_TOKEN');
 const store = openStore(process.env.DATABASE_PATH || './data/app.sqlite');
@@ -19,6 +20,7 @@ client.on(Events.InteractionCreate, async i => {
       store.setLog(i.guildId, channel?.id ?? null);
       return await i.editReply(channel ? 'Log channel saved.' : 'Logs disabled.');
     }
+    if (await handleCaseCommand(i,actor,store)) return;
     if (['history','case'].includes(i.commandName)) {
       if (!actor.permissions.has(P.ModerateMembers)) throw new UserError('Moderate Members is required.');
       const page = i.commandName === 'history' ? i.options.getInteger('page') ?? 1 : 1;

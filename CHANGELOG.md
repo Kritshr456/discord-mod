@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add append-only, guild-scoped case notes with private paginated retrieval and runtime permission checks.
+
 ## 1.1.0
 
 - Add an optional page to `/history`, with three cases per page and a total count.

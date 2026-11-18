@@ -9,6 +9,12 @@ export const commands = Object.entries(required).map(([name,permission]) => {
   return command;
 });
 commands.push(
+  new SlashCommandBuilder().setName('case-note').setDescription('Append a note without changing the original case').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
+    .addIntegerOption(o=>o.setName('id').setDescription('Case number').setMinValue(1).setRequired(true))
+    .addStringOption(o=>o.setName('note').setDescription('Note text').setMaxLength(400).setRequired(true)),
+  new SlashCommandBuilder().setName('case-notes').setDescription('Read case notes').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
+    .addIntegerOption(o=>o.setName('id').setDescription('Case number').setMinValue(1).setRequired(true))
+    .addIntegerOption(o=>o.setName('page').setDescription('Notes page, newest first').setMinValue(1).setMaxValue(100000)),
   new SlashCommandBuilder().setName('history').setDescription('Browse case history for a member').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
     .addUserOption(o => o.setName('member').setDescription('Member').setRequired(true))
     .addIntegerOption(o => o.setName('page').setDescription('History page, newest first').setMinValue(1).setMaxValue(100000)),

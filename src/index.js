@@ -1,5 +1,6 @@
 import { Client, GatewayIntentBits, Events, PermissionFlagsBits as P, MessageFlags } from 'discord.js';
 import { openStore } from './store.js';
+import { notifyModerationResult } from './notifications.js';
 import { handleCaseCommand } from './case-commands.js';
 import { authorize, moderate, required, UserError } from './moderation.js';
 if (!process.env.DISCORD_TOKEN) throw new Error('Missing DISCORD_TOKEN');
@@ -48,14 +49,8 @@ client.on(Events.InteractionCreate, async i => {
         if (i.commandName === 'kick') await target.kick(audit);
         if (i.commandName === 'ban') await target.ban({reason:audit});
       });
-      await i.editReply(`Case #${id}: ${i.commandName} recorded.`);
-      const channelId = store.logChannel(i.guildId);
-      if (channelId) {
-        try {
-          const channel = await i.guild.channels.fetch(channelId);
-          await channel.send({content:`Case #${id} • ${i.commandName} • <@${target.id}> • moderator <@${i.user.id}>\n${reason}`,allowedMentions:{parse:[]}});
-        } catch { console.error(`Case ${id}: log delivery failed; case remains saved.`); }
-      }
+      await notifyModerationResult(i, { id, action: i.commandName, target: target.id, reason },
+        store.logChannel(i.guildId));
     } finally { busy.delete(key); }
   } catch (error) {
     const content = error instanceof UserError ? error.message : 'The action could not be completed. Check bot permissions and try again.';

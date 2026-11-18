@@ -77,3 +77,11 @@ and reply privately. Notes cannot change the original reason, action or status.
 Notes may also document failed or pending cases; they do not retry Discord actions.
 Back up before upgrading, restart, and re-register guild commands. The notes
 table is created automatically; existing case records are preserved.
+
+## Activity summary
+
+`/mod-stats days:30` privately summarizes actions in the current server, grouped
+by action and completed/failed/pending status. Choose 1–365 days; the default is
+30. Counts use each case's creation time in UTC and do not include case notes.
+Moderate Members is checked at runtime. No member names or case reasons are
+included in the summary. Re-register commands after updating.

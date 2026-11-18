@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
+
+- Add guild-scoped moderation activity summaries with configurable lookback periods.
+- Back up, restart and re-register commands after upgrading. New note tables are created automatically; original cases are preserved.
 
 - Add append-only, guild-scoped case notes with private paginated retrieval and runtime permission checks.
 

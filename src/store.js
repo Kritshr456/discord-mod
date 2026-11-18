@@ -26,6 +26,11 @@ export function openStore(path = ':memory:') {
     },
     historyCount: (guild,target) => db.prepare('SELECT COUNT(*) AS total FROM cases WHERE guild=? AND target=?').get(guild,target).total,
     getCase: (guild,id) => db.prepare('SELECT * FROM cases WHERE guild=? AND id=?').get(guild,id),
+    stats(guild,days=30) {
+      if (!Number.isInteger(days) || days < 1 || days > 365) throw new UserError('Choose 1–365 days.');
+      const rows = db.prepare("SELECT action,status,COUNT(*) AS total FROM cases WHERE guild=? AND created>=datetime('now',?) GROUP BY action,status ORDER BY action,status").all(guild,`-${days} days`);
+      return {days,total:rows.reduce((sum,row)=>sum+row.total,0),rows};
+    },
     addNote(guild,id,moderator,note) {
       if (!this.getCase(guild,id)) throw new UserError('Case not found.');
       if (typeof note !== 'string' || !note.trim() || note.length > 400) throw new UserError('Notes must contain 1–400 characters.');

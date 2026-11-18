@@ -9,6 +9,8 @@ export const commands = Object.entries(required).map(([name,permission]) => {
   return command;
 });
 commands.push(
+  new SlashCommandBuilder().setName('mod-stats').setDescription('Summarize moderation activity in this server').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
+    .addIntegerOption(o=>o.setName('days').setDescription('Lookback period; default 30 days').setMinValue(1).setMaxValue(365)),
   new SlashCommandBuilder().setName('case-note').setDescription('Append a note without changing the original case').setDMPermission(false).setDefaultMemberPermissions(P.ModerateMembers)
     .addIntegerOption(o=>o.setName('id').setDescription('Case number').setMinValue(1).setRequired(true))
     .addStringOption(o=>o.setName('note').setDescription('Note text').setMaxLength(400).setRequired(true)),
